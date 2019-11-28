@@ -1,4 +1,4 @@
-if Global.game_settings.level_id == "Enemy_Spawner" then
+if SydneyHUD:IsOr(Global.game_settings.level_id, "Enemy_Spawner", "enemy_spawner2") then
     return
 end
 
@@ -12,13 +12,11 @@ SydneyHUD:Hook(HUDManager, "sync_start_anticipation_music", function(self)
     self._hud_assault_corner:UpdateAssaultState("anticipation")
 end)
 
-if Network:is_server() then
-    function GroupAIStateBase:GetAssaultState()
-        return self._task_data.assault.phase
-    end
-
-    SydneyHUD:Hook(GroupAIStateBase, "on_enemy_weapons_hot", function(self)
-        managers.hud._hud_assault_corner:UpdateAssaultState("control")
-        LuaNetworking:SendToPeers("BAI_AssaultState", "control")
-    end)
+function GroupAIStateBase:GetAssaultState()
+    return self._task_data.assault.phase
 end
+
+SydneyHUD:Hook(GroupAIStateBase, "on_enemy_weapons_hot", function(self)
+    managers.hud._hud_assault_corner:UpdateAssaultState("control")
+    SydneyHUD:SyncAssaultState("control", false, true, true)
+end)

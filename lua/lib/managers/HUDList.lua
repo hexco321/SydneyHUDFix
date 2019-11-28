@@ -37,133 +37,133 @@ end
 
 HUDListManager.ListOptions = HUDListManager.ListOptions or {
 	--General settings
-	right_list_y = SydneyHUD:GetOption("center_assault_banner") and 0 or 50,	--Margin from top for the right list
-	right_list_scale = SydneyHUD:GetModOption("hudlist", "right_list_scale"),	--Size scale of right list
-	left_list_y = 40,	--Margin from top for the left list
-	left_list_scale = SydneyHUD:GetModOption("hudlist", "left_list_scale"),	--Size scale of left list
-	buff_list_y = SydneyHUD:GetModOption("hudlist", "buff_list_y"),	--Margin from bottom for the buff list
-	buff_list_scale = SydneyHUD:GetModOption("hudlist", "buff_list_scale"),	--Size scale of buff list
+	right_list_y = SydneyHUD:GetOption("center_assault_banner") and 0 or 50, --Margin from top for the right list
+	right_list_scale = SydneyHUD:GetModOption("hudlist", "right_list_scale"), --Size scale of right list
+	left_list_y = 40, --Margin from top for the left list
+	left_list_scale = SydneyHUD:GetModOption("hudlist", "left_list_scale"), --Size scale of left list
+	buff_list_y = SydneyHUD:GetModOption("hudlist", "buff_list_y"), --Margin from bottom for the buff list
+	buff_list_scale = SydneyHUD:GetModOption("hudlist", "buff_list_scale"), --Size scale of buff list
 
 	--Left side list
 	show_timers = SydneyHUD:GetModOption("hudlist", "show_timers"),	--Drills, time locks, hacking etc.
-	show_ammo_bags = SydneyHUD:GetModOption("hudlist", "show_ammo_bags"),	--Show ammo bags/shelves and remaining amount
-	show_doc_bags = SydneyHUD:GetModOption("hudlist", "show_doctor_bags"),	--Show doc bags/cabinets and remaining charges
-	show_body_bags = SydneyHUD:GetModOption("hudlist", "show_body_bags"),	--Show body bags and remaining amount. Auto-disabled if heist goes loud
-	show_grenade_crates = SydneyHUD:GetModOption("hudlist", "show_grenade_crates"),	--Show grenade crates with remaining amount
-	show_sentries = SydneyHUD:GetModOption("hudlist", "show_sentries"),	--Deployable sentries, color-coded by owner
-	show_ecms = SydneyHUD:GetModOption("hudlist", "show_ecms"),	--Active ECMs with time remaining
-	show_ecm_retrigger = SydneyHUD:GetModOption("hudlist", "show_ecm_retrigger"),	--Countdown for player owned ECM feedback retrigger delay
-	show_minions = SydneyHUD:GetModOption("hudlist", "show_minions"),	--Converted enemies, type and health
-	show_pagers = SydneyHUD:GetModOption("hudlist", "show_pagers"),	--Show currently active pagers
-	show_tape_loop = SydneyHUD:GetModOption("hudlist", "show_tape_loop"),	--Show active tape loop duration
+	show_ammo_bags = SydneyHUD:GetModOption("hudlist", "show_ammo_bags") - 1, --Show ammo bags/shelves and remaining amount
+	show_doc_bags = SydneyHUD:GetModOption("hudlist", "show_doc_bags") - 1, --Show doc bags/cabinets and remaining charges
+	show_body_bags = SydneyHUD:GetModOption("hudlist", "show_body_bags") - 1, --Show body bags and remaining amount. Auto-disabled if heist goes loud
+	show_grenade_crates = SydneyHUD:GetModOption("hudlist", "show_grenade_crates") - 1,	--Show grenade crates with remaining amount
+	show_sentries = SydneyHUD:GetModOption("hudlist", "show_sentries") - 1, --Deployable sentries, color-coded by owner
+	show_ecms = SydneyHUD:GetModOption("hudlist", "show_ecms"), --Active ECMs with time remaining
+	show_ecm_retrigger = SydneyHUD:GetModOption("hudlist", "show_ecm_retrigger"), --Countdown for player owned ECM feedback retrigger delay
+	show_minions = SydneyHUD:GetModOption("hudlist", "show_minions") - 1, --Converted enemies, type and health
+	show_pagers = SydneyHUD:GetModOption("hudlist", "show_pagers"), --Show currently active pagers
+	show_tape_loop = SydneyHUD:GetModOption("hudlist", "show_tape_loop"), --Show active tape loop duration
 
 	--Right side list
-	show_enemies = SydneyHUD:GetModOption("hudlist", "show_enemies"),		--Currently spawned enemies
-	show_turrets = SydneyHUD:GetModOption("hudlist", "show_turrets"),	--Show active SWAT turrets
-	show_civilians = SydneyHUD:GetModOption("hudlist", "show_civilians"),	--Currently spawned, untied civs
-	show_hostages = SydneyHUD:GetModOption("hudlist", "show_hostages"),	--Currently tied civilian and dominated cops
-	show_minion_count = SydneyHUD:GetModOption("hudlist", "show_minion_count"),	--Current number of jokered enemies
-	show_pager_count = SydneyHUD:GetModOption("hudlist", "show_pager_count"),	--Show number of triggered pagers (only counts pagers triggered while you were present). Auto-disabled if heist goes loud
-	show_camera_count = SydneyHUD:GetModOption("hudlist", "show_camera_count"),	--Show number of active cameras on the map. Auto-disabled if heist goes loud (experimental, has some issues)
-	show_body_count = SydneyHUD:GetModOption("hudlist", "show_body_count"),		--Show number of corpses/body bags on map. Auto-disabled if heist goes loud
-	show_loot = SydneyHUD:GetModOption("hudlist", "show_loot"),	--Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
+	show_enemies = SydneyHUD:GetModOption("hudlist", "show_enemies") - 1, --Currently spawned enemies
+	show_turrets = SydneyHUD:GetModOption("hudlist", "show_turrets"), --Show active SWAT turrets
+	show_civilians = SydneyHUD:GetModOption("hudlist", "show_civilians"), --Currently spawned, untied civs
+	show_hostages = SydneyHUD:GetModOption("hudlist", "show_hostages") - 1, --Currently tied civilian and dominated cops
+	show_minion_count = SydneyHUD:GetModOption("hudlist", "show_minion_count"), --Current number of jokered enemies
+	show_pager_count = SydneyHUD:GetModOption("hudlist", "show_pager_count"), --Show number of triggered pagers (only counts pagers triggered while you were present). Auto-disabled if heist goes loud
+	show_camera_count = SydneyHUD:GetModOption("hudlist", "show_camera_count"), --Show number of active cameras on the map. Auto-disabled if heist goes loud (experimental, has some issues)
+	show_body_count = SydneyHUD:GetModOption("hudlist", "show_body_count"),	 --Show number of corpses/body bags on map. Auto-disabled if heist goes loud
+	show_loot = SydneyHUD:GetModOption("hudlist", "show_loot") - 1,	--Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
 	separate_bagged_loot = SydneyHUD:GetModOption("hudlist", "separate_bagged_loot"),	 --Show bagged/unbagged loot as separate values
 	show_special_pickups = SydneyHUD:GetModOption("hudlist", "show_special_pickups"),	--Show number of special equipment/items
-		ignore_special_pickups = {	--Exclude specific special pickups from showing
-			crowbar = SydneyHUD:GetHUDListItemOption("crowbar"),
-			keycard = SydneyHUD:GetHUDListItemOption("keycard"),
-			courier = SydneyHUD:GetHUDListItemOption("courier"),
-			planks = SydneyHUD:GetHUDListItemOption("planks"),
-			meth_ingredients = SydneyHUD:GetHUDListItemOption("meth_ingredients"),
-			secret_item = SydneyHUD:GetHUDListItemOption("secret_item"),	--Biker heist bottle / BoS rings
-		},
+    ignore_special_pickups = { --Exclude specific special pickups from showing
+        crowbar = SydneyHUD:GetHUDListItemOption("crowbar"),
+        keycard = SydneyHUD:GetHUDListItemOption("keycard"),
+        courier = SydneyHUD:GetHUDListItemOption("courier"),
+        planks = SydneyHUD:GetHUDListItemOption("planks"),
+        meth_ingredients = SydneyHUD:GetHUDListItemOption("meth_ingredients"),
+        secret_item = SydneyHUD:GetHUDListItemOption("secret_item"),	--Biker heist bottle / BoS rings
+    },
 	
 	--Buff list
 	show_buffs = SydneyHUD:GetModOption("hudlist", "show_buffs"),	--Show active effects (buffs/debuffs)
-		ignore_buffs = {	--Exclude specific effects from showing
-			aggressive_reload_aced = SydneyHUD:GetHUDListBuffOption("aggressive_reload"),
-			ammo_efficiency = SydneyHUD:GetHUDListBuffOption("ammo_efficiency"),
-			armor_break_invulnerable = SydneyHUD:GetHUDListBuffOption("armor_break_invulnerability"),
-			berserker = SydneyHUD:GetHUDListBuffOption("berserker"),
-			biker = SydneyHUD:GetHUDListBuffOption("prospect"),
-			bloodthirst_aced = SydneyHUD:GetHUDListBuffOption("bloodthirst_aced"),
-			bloodthirst_basic = SydneyHUD:GetHUDListBuffOption("bloodthirst_basic"),	--true,
-			bullet_storm = SydneyHUD:GetHUDListBuffOption("bullet_storm"),
-			chico_injector = SydneyHUD:GetHUDListBuffOption("injector"),
-			close_contact = SydneyHUD:GetHUDListBuffOption("close_contact_no_talk"),
-			combat_medic = SydneyHUD:GetHUDListBuffOption("combat_medic"),	--true,
-			desperado = SydneyHUD:GetHUDListBuffOption("desperado"),
-			die_hard = SydneyHUD:GetHUDListBuffOption("die_hard"),
-			dire_need = SydneyHUD:GetHUDListBuffOption("dire_need"),
-			grinder = SydneyHUD:GetHUDListBuffOption("histamine"),
-			hostage_situation = SydneyHUD:GetHUDListBuffOption("hostage_situation"),	--true,
-			hostage_taker = SydneyHUD:GetHUDListBuffOption("hostage_taker"),
-			inspire = SydneyHUD:GetHUDListBuffOption("inspire"),
-			lock_n_load = SydneyHUD:GetHUDListBuffOption("lock_n_load"),
-			maniac = SydneyHUD:GetHUDListBuffOption("excitement"),	--true,
-			melee_stack_damage = SydneyHUD:GetHUDListBuffOption("overdog_melee_damage"),
-			messiah = SydneyHUD:GetHUDListBuffOption("messiah"),
-			muscle_regen = SydneyHUD:GetHUDListBuffOption("800_pound_gorilla"),
-			overdog = SydneyHUD:GetHUDListBuffOption("overdog_melee_damage"),
-			overkill = SydneyHUD:GetHUDListBuffOption("overkill"),
-			pain_killer = SydneyHUD:GetHUDListBuffOption("painkillers"),	--true,
-			partner_in_crime = SydneyHUD:GetHUDListBuffOption("partner_in_crime"),
-			quick_fix = SydneyHUD:GetHUDListItemOption("quick_fix"),	--true,
-			running_from_death = SydneyHUD:GetHUDListBuffOption("running_from_death_basic"),
-			running_from_death_aced = SydneyHUD:GetHUDListBuffOption("running_from_death_aced"),
-			second_wind = SydneyHUD:GetHUDListBuffOption("second_wind"),
-			sicario_dodge = SydneyHUD:GetHUDListBuffOption("twitch"),
-			sixth_sense = SydneyHUD:GetHUDListBuffOption("sixth_sense"),
-			smoke_screen = SydneyHUD:GetHUDListBuffOption("smoke_screen"),
-			swan_song = SydneyHUD:GetHUDListBuffOption("swan_song"),
-			tooth_and_claw = SydneyHUD:GetHUDListBuffOption("tooth_and_claw"),	--Also integrated into armor regen
-			trigger_happy = SydneyHUD:GetHUDListBuffOption("trigger_happy"),
-			underdog = SydneyHUD:GetHUDListBuffOption("underdog"),
-			unseen_strike = SydneyHUD:GetHUDListBuffOption("unseen_strike"),
-			uppers = SydneyHUD:GetHUDListBuffOption("uppers"),
-			up_you_go = SydneyHUD:GetHUDListBuffOption("up_you_go"),	--true,
-			yakuza = SydneyHUD:GetHUDListBuffOption("yakuza"),
-			
-			ammo_give_out_debuff = SydneyHUD:GetHUDListBuffOption("ammo_give_out_cooldown"),
-			anarchist_armor_recovery_debuff = SydneyHUD:GetHUDListBuffOption("lust_for_life_cooldown"),
-			armor_break_invulnerable_debuff = SydneyHUD:GetHUDListBuffOption("armor_break_invulnerability_cooldown"),	--Composite
-			bullseye_debuff = SydneyHUD:GetHUDListBuffOption("bullseye_cooldown"),
-			chico_injector_debuff = SydneyHUD:GetHUDListBuffOption("injector_cooldown"),	--Composite
-			grinder_debuff = SydneyHUD:GetHUDListBuffOption("histamine_cooldown"),	--Composite
-			inspire_debuff = SydneyHUD:GetHUDListBuffOption("inspire_boost_cooldown"),
-			inspire_revive_debuff = SydneyHUD:GetHUDListBuffOption("inspire_revive_cooldown"),
-			life_drain_debuff = SydneyHUD:GetHUDListBuffOption("life_drain_cooldown"),
-			medical_supplies_debuff = SydneyHUD:GetHUDListBuffOption("medical_supplies_cooldown"),
-			self_healer_debuff = SydneyHUD:GetHUDListBuffOption("self_healer_cooldown"),
-			sicario_dodge_debuff = SydneyHUD:GetHUDListBuffOption("twitch_cooldown"),	--Composite
-			smoke_grenade = SydneyHUD:GetHUDListBuffOption("smoke_grenade"),
-			sociopath_debuff = SydneyHUD:GetHUDListBuffOption("sociopath_cooldown"),
-			some_invulnerability_debuff = SydneyHUD:GetHUDListBuffOption("some_invulnerability_cooldown"),
-			unseen_strike_debuff = SydneyHUD:GetHUDListBuffOption("unseen_strike_cooldown"),	--Composite
-			uppers_debuff = SydneyHUD:GetHUDListBuffOption("uppers_cooldown"),	--Composite
-			
-			armorer = SydneyHUD:GetHUDListBuffOption("liquid_armor"),
-			crew_chief = SydneyHUD:GetHUDListBuffOption("crew_chief_level"),
-			forced_friendship = SydneyHUD:GetHUDListBuffOption("forced_friendship"),
-			shock_and_awe = SydneyHUD:GetHUDListBuffOption("shock_and_awe"),
-		
-			damage_increase = SydneyHUD:GetHUDListBuffOption("damage_bonus"),
-			damage_reduction = SydneyHUD:GetHUDListBuffOption("received_damage_reduction"),
-			melee_damage_increase = SydneyHUD:GetHUDListBuffOption("melee_damage_increase"),
-            passive_health_regen = SydneyHUD:GetHUDListBuffOption("health_regeneration"),
-            
-            --Custom buffs
-            crew_inspire = SydneyHUD:GetHUDListBuffOption("ai_inspire_cooldown")
-		},
+    ignore_buffs = {	--Exclude specific effects from showing
+        aggressive_reload_aced = SydneyHUD:GetHUDListBuffOption("aggressive_reload"),
+        ammo_efficiency = SydneyHUD:GetHUDListBuffOption("ammo_efficiency"),
+        armor_break_invulnerable = SydneyHUD:GetHUDListBuffOption("armor_break_invulnerability"),
+        berserker = SydneyHUD:GetHUDListBuffOption("berserker"),
+        biker = SydneyHUD:GetHUDListBuffOption("prospect"),
+        bloodthirst_aced = SydneyHUD:GetHUDListBuffOption("bloodthirst_aced"),
+        bloodthirst_basic = SydneyHUD:GetHUDListBuffOption("bloodthirst_basic"),	--true,
+        bullet_storm = SydneyHUD:GetHUDListBuffOption("bullet_storm"),
+        chico_injector = SydneyHUD:GetHUDListBuffOption("injector"),
+        close_contact = SydneyHUD:GetHUDListBuffOption("close_contact_no_talk"),
+        combat_medic = SydneyHUD:GetHUDListBuffOption("combat_medic"),	--true,
+        desperado = SydneyHUD:GetHUDListBuffOption("desperado"),
+        die_hard = SydneyHUD:GetHUDListBuffOption("die_hard"),
+        dire_need = SydneyHUD:GetHUDListBuffOption("dire_need"),
+        grinder = SydneyHUD:GetHUDListBuffOption("histamine"),
+        hostage_situation = SydneyHUD:GetHUDListBuffOption("hostage_situation"),	--true,
+        hostage_taker = SydneyHUD:GetHUDListBuffOption("hostage_taker"),
+        inspire = SydneyHUD:GetHUDListBuffOption("inspire"),
+        lock_n_load = SydneyHUD:GetHUDListBuffOption("lock_n_load"),
+        maniac = SydneyHUD:GetHUDListBuffOption("excitement"),	--true,
+        melee_stack_damage = SydneyHUD:GetHUDListBuffOption("overdog_melee_damage"),
+        messiah = SydneyHUD:GetHUDListBuffOption("messiah"),
+        muscle_regen = SydneyHUD:GetHUDListBuffOption("800_pound_gorilla"),
+        overdog = SydneyHUD:GetHUDListBuffOption("overdog_damage_reduction"),
+        overkill = SydneyHUD:GetHUDListBuffOption("overkill"),
+        pain_killer = SydneyHUD:GetHUDListBuffOption("painkillers"),	--true,
+        partner_in_crime = SydneyHUD:GetHUDListBuffOption("partner_in_crime"),
+        quick_fix = SydneyHUD:GetHUDListItemOption("quick_fix"),	--true,
+        running_from_death = SydneyHUD:GetHUDListBuffOption("running_from_death_basic"),
+        running_from_death_aced = SydneyHUD:GetHUDListBuffOption("running_from_death_aced"),
+        second_wind = SydneyHUD:GetHUDListBuffOption("second_wind"),
+        sicario_dodge = SydneyHUD:GetHUDListBuffOption("twitch"),
+        sixth_sense = SydneyHUD:GetHUDListBuffOption("sixth_sense"),
+        smoke_screen = SydneyHUD:GetHUDListBuffOption("smoke_screen"),
+        swan_song = SydneyHUD:GetHUDListBuffOption("swan_song"),
+        tooth_and_claw = SydneyHUD:GetHUDListBuffOption("tooth_and_claw"),	--Also integrated into armor regen
+        trigger_happy = SydneyHUD:GetHUDListBuffOption("trigger_happy"),
+        underdog = SydneyHUD:GetHUDListBuffOption("underdog"),
+        unseen_strike = SydneyHUD:GetHUDListBuffOption("unseen_strike"),
+        uppers = SydneyHUD:GetHUDListBuffOption("uppers"),
+        up_you_go = SydneyHUD:GetHUDListBuffOption("up_you_go"),	--true,
+        yakuza = SydneyHUD:GetHUDListBuffOption("yakuza"),
+        
+        ammo_give_out_debuff = SydneyHUD:GetHUDListBuffOption("ammo_give_out_cooldown"),
+        anarchist_armor_recovery_debuff = SydneyHUD:GetHUDListBuffOption("lust_for_life_cooldown"),
+        armor_break_invulnerable_debuff = SydneyHUD:GetHUDListBuffOption("armor_break_invulnerability_cooldown"),	--Composite
+        bullseye_debuff = SydneyHUD:GetHUDListBuffOption("bullseye_cooldown"),
+        chico_injector_debuff = SydneyHUD:GetHUDListBuffOption("injector_cooldown"),	--Composite
+        grinder_debuff = SydneyHUD:GetHUDListBuffOption("histamine_cooldown"),	--Composite
+        inspire_debuff = SydneyHUD:GetHUDListBuffOption("inspire_boost_cooldown"),
+        inspire_revive_debuff = SydneyHUD:GetHUDListBuffOption("inspire_revive_cooldown"),
+        life_drain_debuff = SydneyHUD:GetHUDListBuffOption("life_drain_cooldown"),
+        medical_supplies_debuff = SydneyHUD:GetHUDListBuffOption("medical_supplies_cooldown"),
+        self_healer_debuff = SydneyHUD:GetHUDListBuffOption("self_healer_cooldown"),
+        sicario_dodge_debuff = SydneyHUD:GetHUDListBuffOption("twitch_cooldown"),	--Composite
+        smoke_grenade = SydneyHUD:GetHUDListBuffOption("smoke_grenade"),
+        sociopath_debuff = SydneyHUD:GetHUDListBuffOption("sociopath_cooldown"),
+        some_invulnerability_debuff = SydneyHUD:GetHUDListBuffOption("some_invulnerability_cooldown"),
+        unseen_strike_debuff = SydneyHUD:GetHUDListBuffOption("unseen_strike_cooldown"),	--Composite
+        uppers_debuff = SydneyHUD:GetHUDListBuffOption("uppers_cooldown"),	--Composite
+        
+        armorer = SydneyHUD:GetHUDListBuffOption("liquid_armor"),
+        crew_chief = SydneyHUD:GetHUDListBuffOption("crew_chief_level"),
+        forced_friendship = SydneyHUD:GetHUDListBuffOption("forced_friendship"),
+        shock_and_awe = SydneyHUD:GetHUDListBuffOption("shock_and_awe"),
+    
+        damage_increase = SydneyHUD:GetHUDListBuffOption("damage_bonus"),
+        damage_reduction = SydneyHUD:GetHUDListBuffOption("received_damage_reduction"),
+        melee_damage_increase = SydneyHUD:GetHUDListBuffOption("melee_damage_increase"),
+        passive_health_regen = SydneyHUD:GetHUDListBuffOption("health_regeneration"),
+        
+        --Custom buffs
+        crew_inspire = SydneyHUD:GetHUDListBuffOption("ai_inspire_cooldown")
+    },
 	show_player_actions = SydneyHUD:GetModOption("hudlist", "show_player_actions"),	--Show active player actions (armor regen, interactions, weapon charge, reload etc.)
-		ignore_player_actions = {	--Exclude specific effects from showing
-			anarchist_armor_regeneration = SydneyHUD:GetHUDListPlayerActionOption("anarchist_armor_regeneration"),
-			standard_armor_regeneration = SydneyHUD:GetHUDListPlayerActionOption("standard_armor_regeneration"),
-			melee_charge = SydneyHUD:GetHUDListPlayerActionOption("melee_charge"),
-			weapon_charge = SydneyHUD:GetHUDListPlayerActionOption("weapon_charge"),
-			reload = SydneyHUD:GetHUDListPlayerActionOption("reload"),
-			interact = SydneyHUD:GetHUDListPlayerActionOption("interact"),
-		},
+    ignore_player_actions = {	--Exclude specific effects from showing
+        anarchist_armor_regeneration = SydneyHUD:GetHUDListPlayerActionOption("anarchist_armor_regeneration"),
+        standard_armor_regeneration = SydneyHUD:GetHUDListPlayerActionOption("standard_armor_regeneration"),
+        melee_charge = SydneyHUD:GetHUDListPlayerActionOption("melee_charge"),
+        weapon_charge = SydneyHUD:GetHUDListPlayerActionOption("weapon_charge"),
+        reload = SydneyHUD:GetHUDListPlayerActionOption("reload"),
+        interact = SydneyHUD:GetHUDListPlayerActionOption("interact"),
+    }
 }
 
 HUDListManager.TIMER_SETTINGS = {
@@ -206,7 +206,8 @@ HUDListManager.UNIT_TYPES = {
 	fbi_heavy_swat = 			{ type_id = "cop",			category = "enemies",	long_name = "H. FBI SWAT" },
 	city_swat = 				{ type_id = "cop",			category = "enemies",	long_name = "Elite" },
 	heavy_swat_sniper =		{ type_id = "cop",			category = "enemies",	long_name = "H. Sniper" },
-	bolivian_indoors =		{ type_id = "security",		category = "enemies",	long_name = "Sosa Security" },
+    bolivian_indoors =		{ type_id = "security",		category = "enemies",	long_name = "Sosa Security" },
+    bolivian_indoors_mex =  { type_id = "security",         category = "enemies",   long_name = "Bolivian Guard" },
 	security = 					{ type_id = "security",		category = "enemies",	long_name = "Sec. guard" },
 	security_undominatable ={ type_id = "security",		category = "enemies",	long_name = "Sec. guard" },
 	gensec = 					{ type_id = "security",		category = "enemies",	long_name = "GenSec" },
@@ -1428,6 +1429,36 @@ function HUDListManager:_player_action_event(event, id, data)
 			item:set_active(activate)
 		else
 			printf("(%.2f) HUDListManager:_player_action_event(%s, %s): No map entry for item", Application:time(), event, id)
+		end
+	end
+end
+
+function HUDListManager:change_ignore_buff_setting(buff, value)
+	if HUDListManager.ListOptions.ignore_buffs[buff] ~= value then
+		HUDListManager.ListOptions.ignore_buffs[buff] = value
+		
+		if managers.hudlist then
+			managers.hudlist:_set_ignored_buff(buff, value)
+		end
+	end
+end
+
+function HUDListManager:change_ignore_player_action_setting(action, value)
+	if HUDListManager.ListOptions.ignore_player_actions[action] ~= value then
+		HUDListManager.ListOptions.ignore_player_actions[action] = value
+		
+		if managers.hudlist then
+			managers.hudlist:_set_ignored_player_action(action, value)
+		end
+	end
+end
+
+function HUDListManager:change_ignore_special_pickup_setting(pickup, value)
+	if HUDListManager.ListOptions.ignore_special_pickups[pickup] ~= value then
+		HUDListManager.ListOptions.ignore_special_pickups[pickup] = value
+		
+		if managers.hudlist then
+			managers.hudlist:_set_ignored_special_pickup(pickup, value)
 		end
 	end
 end

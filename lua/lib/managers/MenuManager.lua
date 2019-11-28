@@ -3,6 +3,15 @@ function MenuCallbackHandler:is_dlc_latest_locked(...)
     return SydneyHUD:GetOption("remove_ads") and false or is_dlc_latest_locked_original(self, ...)
 end
 
+local old_resume = MenuCallbackHandler.resume_game
+function MenuCallbackHandler:resume_game()
+    old_resume(self)
+    if SydneyHUD.Update then
+        SydneyHUD.Update = false
+        managers.hud:SydneyHUDUpdate()
+    end
+end
+
 local pos =
 {
     ["sydneyhud_hud_tweaks_waypoint"] = 0.125,
@@ -61,7 +70,7 @@ Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_sydneyhud"
     loc:load_localization_file(SydneyHUD._path .. "lang/languages.json")
 end)
 
-Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_sydneyhud", function(menu_manager, nodes)
+Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_SydneyHUD", function(menu_manager, nodes)
     if nodes.main then
         MenuHelper:AddMenuItem(nodes.main, "crimenet_contract_special", "menu_cn_premium_buy", "menu_cn_premium_buy_desc", "crimenet", "after")
     end
@@ -70,7 +79,7 @@ end)
 --[[
     Setup our menu callbacks and build the menu from our json file.
 ]]
-Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_sydneyhud", function(menu_manager)
+Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_SydneyHUD", function(menu_manager)
     --[[
         Setup our callbacks as defined in our item callback keys, and perform our logic on the data retrieved.
     ]]
@@ -103,7 +112,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_sydneyhud", function(m
     end
 
     MenuCallbackHandler.SydneyHUD_HUDTweaks_Assault_ChangedFocus = function(node, focus)
-        if BAI then
+        if BAI and focus then
             local items = { "show_assault_states", "enable_enhanced_assault_banner", "enhanced_assault_spawns", "enhanced_assault_time", "time_format", "enhanced_assault_count"}
             for _, v in pairs(items) do
                 node:item(v):set_enabled(false)
@@ -150,21 +159,21 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_sydneyhud", function(m
     end
 
     -- HUDList
-    MenuCallbackHandler.callback_hudlist_enable = function(self, item)
-        SydneyHUD._data.hudlist_enable = item:value() == "on"
+    MenuCallbackHandler.callback_hudlist_enabled = function(self, item)
+        SydneyHUD._data.hudlist_enabled = item:value() == "on"
     end
 
     -- Left Panel
     MenuCallbackHandler.callback_left_list_scale = function(self, item)
-        SydneyHUD._data.hudlist_left_list_scale = math.floor(item:value())
+        SydneyHUD._data.hudlist_left_list_scale = item:value()
     end
 
     MenuCallbackHandler.callback_show_ammo_bags = function(self, item)
         SydneyHUD._data.hudlist_show_ammo_bags = item:value()
     end
 
-    MenuCallbackHandler.callback_show_doctor_bags = function(self, item)
-        SydneyHUD._data.hudlist_show_doctor_bags = item:value()
+    MenuCallbackHandler.callback_show_doc_bags = function(self, item)
+        SydneyHUD._data.hudlist_show_doc_bags = item:value()
     end
 
     MenuCallbackHandler.callback_show_body_bags = function(self, item)
@@ -205,7 +214,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_sydneyhud", function(m
 
     -- Right Panel
     MenuCallbackHandler.callback_right_list_scale = function(self, item)
-        SydneyHUD._data.hudlist_right_list_scale = math.floor(item:value())
+        SydneyHUD._data.hudlist_right_list_scale = item:value()
     end
 
     MenuCallbackHandler.callback_show_loot = function(self, item)
@@ -253,28 +262,28 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_sydneyhud", function(m
     end
 
     -- Right Panel (Special Pickup)
-    MenuCallbackHandler.callback_not_ignore_item_crowbar = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_item_crowbar = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_item_crowbar = function(self, item)
+        SydneyHUD._data.hudlist_ignore_item_crowbar = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_item_keycard = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_item_keycard = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_item_keycard = function(self, item)
+        SydneyHUD._data.hudlist_ignore_item_keycard = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_item_courier = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_item_courier = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_item_courier = function(self, item)
+        SydneyHUD._data.hudlist_ignore_item_courier = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_item_planks = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_item_planks = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_item_planks = function(self, item)
+        SydneyHUD._data.hudlist_ignore_item_planks = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_item_meth_ingredients = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_item_meth_ingredients = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_item_meth_ingredients = function(self, item)
+        SydneyHUD._data.hudlist_ignore_item_meth_ingredients = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_item_secret_item = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_item_secret_item = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_item_secret_item = function(self, item)
+        SydneyHUD._data.hudlist_ignore_item_secret_item = item:value() == "on"
     end
 
     -- Down Panel (Buff)
@@ -283,7 +292,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_sydneyhud", function(m
     end
 
     MenuCallbackHandler.callback_buff_list_scale = function(self, item)
-        SydneyHUD._data.hudlist_buff_list_scale = math.floor(item:value())
+        SydneyHUD._data.hudlist_buff_list_scale = item:value()
     end
 
     MenuCallbackHandler.callback_show_buffs = function(self, item)
@@ -295,344 +304,344 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_sydneyhud", function(m
     end
 
     -- Down Panel (Buff Options; Skills; Mastermind)
-    MenuCallbackHandler.callback_not_ignore_buff_aggressive_reload = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_aggressive_reload = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_aggressive_reload = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_aggressive_reload = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_ammo_efficiency = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_ammo_efficiciency= item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_ammo_efficiency = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_ammo_efficiciency= item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_combat_medic = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_combat_medic = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_combat_medic = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_combat_medic = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_forced_friendship = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_forced_friendship = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_forced_friendship = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_forced_friendship = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_hostage_taker = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_hostage_taker = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_hostage_taker = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_hostage_taker = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_inspire = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_inspire = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_inspire = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_inspire = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_inspire_boost_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_inspire_boost_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_inspire_boost_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_inspire_boost_cooldown = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_inspire_revive_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_inspire_revive_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_inspire_revive_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_inspire_revive_cooldown = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_painkillers = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_painkillers = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_painkillers = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_painkillers = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_partner_in_crime = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_partner_in_crime = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_partner_in_crime = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_partner_in_crime = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_quick_fix = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_quick_fix = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_quick_fix = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_quick_fix = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_uppers = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_uppers = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_uppers = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_uppers = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_uppers_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_uppers_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_uppers_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_uppers_cooldown = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Skills; Enforcer)
-    MenuCallbackHandler.callback_not_ignore_buff_bullet_storm = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_bullet_storm = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_bullet_storm = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_bullet_storm = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_bullseye_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_bullseye_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_bullseye_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_bullseye_cooldown = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_die_hard = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_die_hard = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_die_hard = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_die_hard = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_overkill = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_overkill = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_overkill = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_overkill = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_shock_and_awe = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_shock_and_awe = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_shock_and_awe = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_shock_and_awe = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_underdog = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_underdog = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_underdog = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_underdog = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Skills; Technician)
-    MenuCallbackHandler.callback_not_ignore_buff_lock_n_load = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_lock_n_load = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_lock_n_load = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_lock_n_load = item:value() == "on"
     end
     
     -- Down Panel (Buff Options; Skills; Ghost)
-    MenuCallbackHandler.callback_not_ignore_buff_dire_need = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_dire_need = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_dire_need = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_dire_need = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_second_wind = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_second_wind = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_second_wind = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_second_wind = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_sixth_sense = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_sixth_sense = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_sixth_sense = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_sixth_sense = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_unseen_strike = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_unseen_strike = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_unseen_strike = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_unseen_strike = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_unseen_strike_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_unseen_strike_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_unseen_strike_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_unseen_strike_cooldown = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Skills; Fugitive)
-    MenuCallbackHandler.callback_not_ignore_buff_berserker = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_berserker = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_berserker = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_berserker = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_bloodthirst_basic = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_bloodthirst_basic = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_bloodthirst_basic = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_bloodthirst_basic = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_bloodthirst_aced = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_bloodthirst_aced = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_bloodthirst_aced = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_bloodthirst_aced = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_desperado = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_desperado = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_desperado = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_desperado = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_messiah = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_messiah = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_messiah = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_messiah = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_running_from_death_basic = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_running_from_death_basic = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_running_from_death_basic = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_running_from_death_basic = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_running_from_death_aced = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_running_from_death_aced = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_running_from_death_aced = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_running_from_death_aced = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_swan_song = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_swan_song = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_swan_song = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_swan_song = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_trigger_happy = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_trigger_happy = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_trigger_happy = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_trigger_happy = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_up_you_go = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_up_you_go = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_up_you_go = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_up_you_go = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Composite)
-    MenuCallbackHandler.callback_not_ignore_buff_damage_bonus = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_damage_bonus = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_damage_bonus = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_damage_bonus = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_received_damage_reduction = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_received_damage_reduction = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_received_damage_reduction = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_received_damage_reduction = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_melee_damage_increase = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_melee_damage_increase = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_melee_damage_increase = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_melee_damage_increase = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_health_regeneration = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_health_regeneration = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_health_regeneration = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_health_regeneration = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Perks)
-    MenuCallbackHandler.callback_not_ignore_buff_armor_break_invulnerability = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_armor_break_invulnerability = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_armor_break_invulnerability = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_armor_break_invulnerability = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_armor_break_invulnerability_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_armor_break_invulnerability_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_armor_break_invulnerability_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_armor_break_invulnerability_cooldown = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_close_contact_no_talk = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_close_contact_no_talk = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_close_contact_no_talk = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_close_contact_no_talk = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Perks; Crew Chief)
-    MenuCallbackHandler.callback_not_ignore_buff_crew_chief_level = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_crew_chief_level = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_crew_chief_level = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_crew_chief_level = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_hostage_situation = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_hostage_situation = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_hostage_situation = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_hostage_situation = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Perks; Muscle)
-    MenuCallbackHandler.callback_not_ignore_buff_800_pound_gorilla = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_800_pound_gorilla = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_800_pound_gorilla = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_800_pound_gorilla = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Perks; Armorer)
-    MenuCallbackHandler.callback_not_ignore_buff_liquid_armor = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_liquid_armor = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_liquid_armor = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_liquid_armor = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Perks; Hitman)
-    MenuCallbackHandler.callback_not_ignore_buff_tooth_and_claw = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_tooth_and_claw = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_tooth_and_claw = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_tooth_and_claw = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Perks; Infiltrator)
-    MenuCallbackHandler.callback_not_ignore_buff_life_drain_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_life_drain_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_life_drain_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_life_drain_cooldown = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_overdog_damage_reduction = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_overdog_damage_reduction = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_overdog_damage_reduction = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_overdog_damage_reduction = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_overdog_melee_damage = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_overdog_melee_damage = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_overdog_melee_damage = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_overdog_melee_damage = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Perks; Sociopath)
-    MenuCallbackHandler.callback_not_ignore_buff_sociopath_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_sociopath_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_sociopath_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_sociopath_cooldown = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Perks; Gambler)
-    MenuCallbackHandler.callback_not_ignore_buff_ammo_give_out_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_ammo_give_out_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_ammo_give_out_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_ammo_give_out_cooldown = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_medical_supplies_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_medical_supplies_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_medical_supplies_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_medical_supplies_cooldown = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Perks; Grinder)
-    MenuCallbackHandler.callback_not_ignore_buff_histamine = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_histamine = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_histamine = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_histamine = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_histamine_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_histamine_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_histamine_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_histamine_cooldown = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Perks; Yakuza)
-    MenuCallbackHandler.callback_not_ignore_buff_yakuza = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_yakuza = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_yakuza = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_yakuza = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Perks; Maniac)
-    MenuCallbackHandler.callback_not_ignore_buff_excitement = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_excitement = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_excitement = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_excitement = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Perks; Anarchist)
-    MenuCallbackHandler.callback_not_ignore_buff_lust_for_life_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_lust_for_life_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_lust_for_life_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_lust_for_life_cooldown = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Perks; Biker)
-    MenuCallbackHandler.callback_not_ignore_buff_prospect = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_prospect = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_prospect = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_prospect = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Perks; Kingpin)
-    MenuCallbackHandler.callback_not_ignore_buff_injector = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_injector = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_injector = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_injector = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_injector_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_injector_cooldown = item:value() == "on"
-    end
-
-    -- Down Panel (Buff Options; Perks; Sicario)
-    MenuCallbackHandler.callback_not_ignore_buff_smoke_grenade = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_smoke_grenade = item:value() == "on"
-    end
-
-    MenuCallbackHandler.callback_not_ignore_buff_smoke_screen = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_smoke_screen = item:value() == "on"
-    end
-
-    MenuCallbackHandler.callback_not_ignore_buff_twitch = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_twitch = item:value() == "on"
-    end
-
-    MenuCallbackHandler.callback_not_ignore_buff_twitch_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_twitch_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_injector_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_injector_cooldown = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Perks; Sicario)
-    MenuCallbackHandler.callback_not_ignore_buff_calm = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_calm = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_smoke_grenade = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_smoke_grenade = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_stoic_flask = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_stoic_flask = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_smoke_screen = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_smoke_screen = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_virtue_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_virtue_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_twitch = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_twitch = item:value() == "on"
+    end
+
+    MenuCallbackHandler.callback_ignore_buff_twitch_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_twitch_cooldown = item:value() == "on"
+    end
+
+    -- Down Panel (Buff Options; Perks; Sicario)
+    MenuCallbackHandler.callback_ignore_buff_calm = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_calm = item:value() == "on"
+    end
+
+    MenuCallbackHandler.callback_ignore_buff_stoic_flask = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_stoic_flask = item:value() == "on"
+    end
+
+    MenuCallbackHandler.callback_ignore_buff_virtue_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_virtue_cooldown = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Perks; Hacker)
-    MenuCallbackHandler.callback_not_ignore_buff_pocket_jammer_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_pocket_jammer_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_pocket_jammer_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_pocket_jammer_cooldown = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_kluge = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_kluge = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_kluge = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_kluge = item:value() == "on"
     end
 
     -- Down Panel (Buff Options; Boosts)
-    MenuCallbackHandler.callback_not_ignore_buff_some_invulnerability_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_some_invulnerability_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_some_invulnerability_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_some_invulnerability_cooldown = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_self_healer_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_self_healer_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_self_healer_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_self_healer_cooldown = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_buff_ai_inspire_cooldown = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_buff_ai_inspire_cooldown = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_buff_ai_inspire_cooldown = function(self, item)
+        SydneyHUD._data.hudlist_ignore_buff_ai_inspire_cooldown = item:value() == "on"
     end
 
     -- Down Panel (Player Action Option)
-    MenuCallbackHandler.callback_not_ignore_player_action_anarchist_armor_regeneration = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_player_action_anarchist_armor_regeneration = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_player_action_anarchist_armor_regeneration = function(self, item)
+        SydneyHUD._data.hudlist_ignore_player_action_anarchist_armor_regeneration = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_player_action_reload = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_player_action_reload = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_player_action_reload = function(self, item)
+        SydneyHUD._data.hudlist_ignore_player_action_reload = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_player_action_interact = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_player_action_interact = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_player_action_interact = function(self, item)
+        SydneyHUD._data.hudlist_ignore_player_action_interact = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_player_action_melee_charge = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_player_action_melee_charge = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_player_action_melee_charge = function(self, item)
+        SydneyHUD._data.hudlist_ignore_player_action_melee_charge = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_player_action_weapon_charge = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_player_action_weapon_charge = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_player_action_weapon_charge = function(self, item)
+        SydneyHUD._data.hudlist_ignore_player_action_weapon_charge = item:value() == "on"
     end
 
-    MenuCallbackHandler.callback_not_ignore_player_action_standard_armor_regeneration = function(self, item)
-        SydneyHUD._data.hudlist_not_ignore_player_action_standard_armor_regeneration = item:value() == "on"
+    MenuCallbackHandler.callback_ignore_player_action_standard_armor_regeneration = function(self, item)
+        SydneyHUD._data.hudlist_ignore_player_action_standard_armor_regeneration = item:value() == "on"
     end
 
     -- HUD Lists (Buffs)
@@ -1076,6 +1085,40 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_sydneyhud", function(m
         SydneyHUD._data.swansong_effect = item:value() == "on"
     end
 
+    -- Music Tweaks
+    MenuCallbackHandler.callback_music_on_steam_overlay = function(self, item)
+        SydneyHUD._data.music_on_steam_overlay = item:value() == "on"
+    end
+
+    MenuCallbackHandler.callback_shuffle_music = function(self, item)
+        SydneyHUD._data.shuffle_music = item:value() == "on"
+    end
+
+    -- Optimization Tweaks
+    MenuCallbackHandler.callback_block_blood_decals = function(self, item)
+        SydneyHUD._data.block_bullet_decals = item:value() == "on"
+    end
+
+    MenuCallbackHandler.callback_block_bullet_decals = function(self, item)
+        SydneyHUD._data.block_bullet_decals = item:value() == "on"
+    end
+
+    MenuCallbackHandler.callback_block_corpses = function(self, item)
+        SydneyHUD._data.block_corpses = item:value() == "on"
+    end
+
+    MenuCallbackHandler.callback_block_helmets = function(self, item)
+        SydneyHUD._data.block_helmets = item:value() == "on"
+    end
+
+    MenuCallbackHandler.callback_block_magazines = function(self, item)
+        SydneyHUD._data.block_magazines = item:value() == "on"
+    end
+
+    MenuCallbackHandler.callback_block_shields = function(self, item)
+        SydneyHUD._data.block_shields = item:value() == "on"
+    end
+
     -- SydneyHUD
     MenuCallbackHandler.callback_sydneyhud_language = function(self, item)
         SydneyHUD._data.language = item:value()
@@ -1104,6 +1147,9 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_sydneyhud", function(m
     MenuCallbackHandler.SydneyHUDSave = function(this, item)
         SydneyHUD:Save()
         SydneyHUD:DestroyPanel()
+        if Utils:IsInHeist() then
+            SydneyHUD.Update = true
+        end
     end
 
     SydneyHUD:InitAllMenus()

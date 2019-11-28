@@ -19,8 +19,9 @@ end
     We cache the ModPath directory, so that when our hooks are called, we aren't using the ModPath from a
         different mod.
 ]]
-SydneyHUD = SydneyHUD or {}
-if not SydneyHUD.setup then
+
+if not SydneyHUD then
+    SydneyHUD = {}
 
     --[[
         Alias for EZ to write log
@@ -35,8 +36,17 @@ if not SydneyHUD.setup then
     SydneyHUD.error = "[SydneyHUD Error] "
     SydneyHUD.dev = "[SydneyHUD Dev] "
 
-    -- var for script
-    SydneyHUD._last_removed_time = 0
+    SydneyHUD.SaveDataVer = 2
+
+    SydneyHUD.ModVersion = nil -- Used for caching mod version
+
+    SydneyHUD.EasterEgg = 
+    {
+        FSS =
+        {
+            AIReactionTimeTooHigh = false
+        }
+    }
 
     SydneyHUD._down_count = {}
 
@@ -67,7 +77,7 @@ if not SydneyHUD.setup then
         "sydneyhud_hudlist_options",
         "sydneyhud_hudlist_options_left",
         "sydneyhud_hudlist_options_right",
-        "sydneyhud_hudlist_options_right_not_ignore",
+        "sydneyhud_hudlist_options_right_ignore",
         "sydneyhud_hudlist_options_buff",
         "sydneyhud_hudlist_options_buff_options",
         "sydneyhud_hudlist_options_buff_options_buff",
@@ -113,81 +123,13 @@ if not SydneyHUD.setup then
         "sydneyhud_hud_tweaks_interact",
         "sydneyhud_hud_tweaks_name",
         "sydneyhud_hud_tweaks_panel",
-        "sydneyhud_hud_tweaks_waypoint"
+        "sydneyhud_hud_tweaks_waypoint",
+
+        "sydneyhud_music_tweaks",
+
+        "sydneyhud_optimization_tweaks"
     }
-    SydneyHUD._hook_files = {
-        ["lib/entry"] = "lib/Entry.lua",
-        ["lib/managers/chatmanager"] = "lib/managers/ChatManager.lua",
-        ["lib/managers/enemymanager"] = "lib/managers/EnemyManager.lua",
-        ["lib/managers/group_ai_states/groupaistatebase"] = "lib/managers/group_ai_states/GroupAIStateBase.lua",
-        ["lib/managers/hud/hudassaultcorner"] = "lib/managers/hud/HUDAssaultCorner.lua",
-        ["lib/managers/hud/hudinteraction"] = "lib/managers/hud/HUDInteraction.lua",
-        ["lib/managers/hud/hudstatsscreen"] = "lib/managers/hud/HUDStatsScreen.lua",
-        ["lib/managers/hud/hudsuspicion"] = "lib/managers/hud/HUDSuspicion.lua",
-        ["lib/managers/hud/hudteammate"] = "lib/managers/hud/HUDTeammate.lua",
-        ["lib/managers/hudmanager"] = "lib/managers/HUDManager.lua",
-        ["lib/managers/hudmanagerpd2"] = "lib/managers/HUDManagerPD2.lua",
-        ["lib/managers/menu/blackmarketgui"] = "lib/managers/menu/BlackMarketGUI.lua",
-        ["lib/managers/menu/contractboxgui"] = "lib/managers/menu/ContractBoxGui.lua",
-        ["lib/managers/menu/lootdropscreengui"] = "lib/managers/menu/LootDropScreenGui.lua",
-        ["lib/managers/menu/menubackdropgui"] = "lib/managers/menu/MenuBackDropGUI.lua",
-        ["lib/managers/menu/menucomponentmanager"] = "lib/managers/menu/MenuComponentManager.lua",
-        ["lib/managers/menu/menunodegui"] = "lib/managers/menu/MenuNodeGui.lua",
-        ["lib/managers/menu/menuscenemanager"] = "lib/managers/menu/MenuSceneManager.lua",
-        ["lib/managers/menu/missionbriefinggui"] = "lib/managers/menu/MissionBriefingGui.lua",
-        ["lib/managers/menu/stageendscreengui"] = "lib/managers/menu/StageEndScreenGui.lua",
-        ["lib/managers/menumanager"] = "lib/managers/MenuManager.lua",
-        ["lib/managers/missionassetsmanager"] = "lib/managers/MissionAssetsManager.lua",
-        ["lib/managers/moneymanager"] = "lib/managers/MoneyManager.lua",
-        ["lib/managers/objectinteractionmanager"] = "lib/managers/ObjectInteractionManager.lua",
-        ["lib/managers/playermanager"] = "lib/managers/PlayerManager.lua",
-        ["lib/managers/trademanager"] = "lib/managers/TradeManager.lua",
-        ["lib/modifiers/boosts/gagemodifierlifesteal"] = "lib/modifiers/boosts/GageModifierLifeSteal.lua",
-        ["lib/modifiers/boosts/gagemodifiermeleeinvincibility"] = "lib/modifiers/boosts/GageMeleeModifierInvincibility.lua",
-        ["lib/network/base/handlers/connectionnetworkhandler"] = "lib/network/base/handlers/ConnectionNetworkHandler.lua",
-        ["lib/network/base/networkpeer"] = "lib/network/base/NetworkPeer.lua",
-        ["lib/network/handlers/unitnetworkhandler"] = "lib/network/handlers/UnitNetworkHandler.lua",
-        ["lib/player_actions/skills/playeractionammoefficiency"] = "lib/player_actions/skills/PlayerActionAmmoEfficiency.lua",
-        ["lib/player_actions/skills/playeractionbloodthirstbase"] = "lib/player_actions/skills/PlayerActionBloodthirstBase.lua",
-        ["lib/player_actions/skills/playeractiondireneed"] = "lib/player_actions/skills/PlayerActionDireNeed.lua",
-        ["lib/player_actions/skills/playeractionexperthandling"] = "lib/player_actions/skills/PlayerActionExpertHandling.lua",
-        ["lib/player_actions/skills/playeractionshockandawe"] = "lib/player_actions/skills/PlayerActionShockAndAwe.lua",
-        ["lib/player_actions/skills/playeractiontriggerhappy"] = "lib/player_actions/skills/PlayerActionTriggerHappy.lua",
-        ["lib/player_actions/skills/playeractionunseenstrike"] = "lib/player_actions/skills/PlayerActionUnseenStrike.lua",
-        ["lib/setups/setup"] = "lib/setups/Setup.lua",
-        ["lib/states/ingamewaitingforplayers"] = "lib/states/IngameWaitingForPlayersState.lua",
-        ["lib/tweak_data/charactertweakdata"] = "lib/tweak_data/CharacterTweakData.lua",
-        ["lib/tweak_data/playertweakdata"] = "lib/tweak_data/PlayerTweakData.lua",
-        ["lib/units/beings/player/huskplayermovement"] = "lib/units/beings/player/HuskPlayerMovement.lua",
-        ["lib/units/beings/player/playerdamage"] = "lib/units/beings/player/PlayerDamage.lua",
-        ["lib/units/beings/player/playerinventory"] = "lib/units/beings/player/PlayerInventory.lua",
-        ["lib/units/beings/player/playermovement"] = "lib/units/beings/player/PlayerMovement.lua",
-        ["lib/units/beings/player/states/playerbleedout"] = "lib/units/beings/player/states/PlayerBleedOut.lua",
-        ["lib/units/beings/player/states/playercarry"] = "lib/units/beings/player/states/PlayerCarry.lua",
-        ["lib/units/beings/player/states/playercivilian"] = "lib/units/beings/player/states/PlayerCivilian.lua",
-        ["lib/units/beings/player/states/playerdriving"] = "lib/units/beings/player/states/PlayerDriving.lua",
-        ["lib/units/beings/player/states/playermaskoff"] = "lib/units/beings/player/states/PlayerMaskOff.lua",
-        ["lib/units/beings/player/states/playerstandard"] = "lib/units/beings/player/states/PlayerStandard.lua",
-        ["lib/units/enemies/cop/copdamage"] = "lib/units/enemies/cop/CopDamage.lua",
-        ["lib/units/equipment/ammo_bag/ammobagbase"] = "lib/units/equipment/ammo_bag/AmmoBagBase.lua",
-        ["lib/units/equipment/bodybags_bag/bodybagsbagbase"] = "lib/units/equipment/bodybags_bag/BodyBagBase.lua",
-        ["lib/units/equipment/doctor_bag/doctorbagbase"] = "lib/units/equipment/doctor_bag/DoctorBagBase.lua",
-        ["lib/units/equipment/ecm_jammer/ecmjammerbase"] = "lib/units/equipment/ecm_jammer/ECMJammerBase.lua",
-        ["lib/units/equipment/grenade_crate/grenadecratebase"] = "lib/units/equipment/grenade_crate/GrenadeCrateBase.lua",
-        ["lib/units/equipment/sentry_gun/sentrygunbase"] = "lib/units/equipment/sentry_gun/SentryGunBase.lua",
-        ["lib/units/equipment/sentry_gun/sentrygundamage"] = "lib/units/equipment/sentry_gun/SentryGunDamage.lua",
-        ["lib/units/interactions/interactionext"] = "lib/units/interactions/InteractionExt.lua",
-        ["lib/units/props/digitalgui"] = "lib/units/props/DigitalGui.lua",
-        ["lib/units/props/securitycamera"] = "lib/units/props/SecurityCamera.lua",
-        ["lib/units/props/securitylockgui"] = "lib/units/props/SecurityLockGui.lua",
-        ["lib/units/props/timergui"] = "lib/units/props/TimerGui.lua",
-        ["lib/units/weapons/newraycastweaponbase"] = "lib/units/weapons/NewRayCastWeaponBase.lua",
-        ["lib/units/weapons/sentrygunweapon"] = "lib/units/weapons/SentryGunWeapon.lua",
-        ["lib/units/weapons/weaponflashlight"] = "lib/units/weapons/WeaponFlashlight.lua",
-        ["lib/units/weapons/weaponlaser"] = "lib/units/weapons/WeaponLaser.lua",
-        ["lib/utils/propertymanager"] = "lib/utils/PropertyManager.lua",
-        ["lib/utils/temporarypropertymanager"] = "lib/utils/TemporaryPropertyManager.lua"
-    }
+
     SydneyHUD._poco_conflicting_defaults = {
         buff = {
             mirrorDirection = true,
@@ -217,6 +159,8 @@ if not SydneyHUD.setup then
     function SydneyHUD:Save()
         local file = io.open(self._data_path, "w+")
         if file then
+            self._data.SaveDataVer = self.SaveDataVer
+            self._data.SydneyHUDVersion = self:GetVersion()
             file:write(json.encode(self._data))
             file:close()
         end
@@ -229,12 +173,18 @@ if not SydneyHUD.setup then
         self:LoadDefaults()
         local file = io.open(self._data_path, "r")
         if file then
-            for k, v in pairs(json.decode(file:read("*all"))) do
-                if self._data[k] ~= nil then
-                    self._data[k] = v
-                end
-            end
+            local table = json.decode(file:read("*all")) or {}
             file:close()
+            if table.SaveDataVer and table.SaveDataVer == self.SaveDataVer then
+                for k, v in pairs(table) do
+                    if self._data[k] ~= nil then
+                        self._data[k] = v
+                    end
+                end
+            else
+                self.SaveDataNotCompatible = true
+                self:Save()
+            end
         end
         self:CheckPoco()
     end
@@ -248,15 +198,15 @@ if not SydneyHUD.setup then
     end
 
     function SydneyHUD:GetHUDListItemOption(item_name)
-        return not self:GetOption("hudlist_not_ignore_item_" .. item_name)
+        return self:GetOption("hudlist_ignore_item_" .. item_name)
     end
 
     function SydneyHUD:GetHUDListBuffOption(buff_name)
-        return not self:GetOption("hudlist_not_ignore_buff_" .. buff_name)
+        return self:GetOption("hudlist_ignore_buff_" .. buff_name)
     end
 
     function SydneyHUD:GetHUDListPlayerActionOption(action_name)
-        return not self:GetOption("hudlist_not_ignore_player_action_" .. action_name)
+        return self:GetOption("hudlist_ignore_player_action_" .. action_name)
     end
 
     function SydneyHUD:LoadDefaults()
@@ -310,19 +260,6 @@ if not SydneyHUD.setup then
         end
     end
 
-    function SydneyHUD:SafeDoFile(fileName)
-        local success, errorMsg = pcall(function()
-            if io.file_is_readable(fileName) then
-                dofile(fileName)
-            else
-                log(SydneyHUD.error .. "Can't open file '" .. fileName .. "'!")
-            end
-        end)
-        if not success then
-            log(SydneyHUD.error .. "File: " .. fileName .. "\n" .. errorMsg)
-        end
-    end
-
     function SydneyHUD:MakeOutlineText(panel, bg, txt)
         bg.name = nil
         local bgs = {}
@@ -341,12 +278,17 @@ if not SydneyHUD.setup then
     end
 
     function SydneyHUD:GetVersion()
+        if self.ModVersion then -- Caching
+            return self.ModVersion
+        end
         for _, mod in ipairs(BLT.Mods:Mods()) do
             if mod:GetName() == "SydneyHUD" then -- I don't understand, why BLT is checking every mod it's identifier (mod folder name) and not mod name defined in mod.txt
-                return tostring(mod:GetVersion() or "(n/a)")
+                self.ModVersion = tostring(mod:GetVersion() or "(n/a)")
+                return self.ModVersion
             end
         end
-        return "(n/a)"
+        self.ModVersion = "(n/a)"
+        return self.ModVersion
     end
 
     function SydneyHUD:SendChatMessage(name, message, isfeed, color)
@@ -410,14 +352,15 @@ if not SydneyHUD.setup then
             end
 
             SydneyHUD._down_count[peer_id] = (SydneyHUD._down_count[peer_id] or 0) + 1
+            local is_feed
 
             if SydneyHUD._down_count[peer_id] == warn_down and SydneyHUD:GetOption("critical_down_warning_chat_info") then
                 local message = peer:name() .. " was downed " .. tostring(SydneyHUD._down_count[peer_id]) .. " times"
-                local is_feed = SydneyHUD:GetOption("critical_down_warning_chat_info_feed")
+                is_feed = SydneyHUD:GetOption("critical_down_warning_chat_info_feed")
                 self:SendChatMessage("Warning!", message, is_feed, "ff0000")
             elseif SydneyHUD:GetOption("down_warning_chat_info") then
                 local message = peer:name() .. " was downed (" .. tostring(SydneyHUD._down_count[peer_id]) .. "/" .. warn_down .. ")"
-                local is_feed = SydneyHUD:GetOption("down_warning_chat_info_feed")
+                is_feed = SydneyHUD:GetOption("down_warning_chat_info_feed")
                 self:SendChatMessage("Warning", message, is_feed, "ff0000")
             end
         end
@@ -576,7 +519,7 @@ if not SydneyHUD.setup then
             return Color.white
         end
         extension = extension or ""
-        return Color(1, SydneyHUD._data[color .. "_r" .. extension], SydneyHUD._data[color .. "_g" .. extension], SydneyHUD._data[color .. "_b" .. extension]) -- Already converted from 255 format
+        return Color(255, SydneyHUD._data[color .. "_r" .. extension] * 100, SydneyHUD._data[color .. "_g" .. extension] * 100, SydneyHUD._data[color .. "_b" .. extension] * 100) / 255
     end
 
     function SydneyHUD:IsOr(string, ...)
@@ -596,19 +539,26 @@ if not SydneyHUD.setup then
         Hooks:RemovePostHook((mod and (mod .. "_") or "BAI_") .. id)
     end ]]
 
-    SydneyHUD:Load()
-    SydneyHUD.setup = true
-    if CustomWaypoint then
-        CustomWaypoint:ChangeVariables() -- Hack
+    function SydneyHUD:EasterEggInit()
+        self.EasterEgg.FSS.AIReactionTimeTooHigh = (FullSpeedSwarm and (FullSpeedSwarm.settings.task_throughput > 600 or FullSpeedSwarm.settings.task_throughput == 0) and Network:is_server() and Global.game_settings.difficulty == "sm_wish") or
+            (managers.crime_spree and managers.crime_spree:is_active() and managers.crime_spree:server_spree_level() >= 500 or false)
     end
-    log(SydneyHUD.info .. "SydneyHUD loaded.")
-end
 
-if RequiredScript then
-    local requiredScript = RequiredScript:lower()
-    if SydneyHUD._hook_files[requiredScript] then
-        SydneyHUD:SafeDoFile(SydneyHUD._lua_path .. SydneyHUD._hook_files[requiredScript])
-    else
-        log(SydneyHUD.warn .. "unlinked script called: " .. requiredScript)
+    function SydneyHUD:SyncAssaultState(state, override, stealth_broken, no_as_mod)
+        if Network:is_client() then
+            return
+        end
+        if state then
+            if not self:IsOr(state, "control", "anticipation", "build") or stealth_broken then
+                LuaNetworking:SendToPeers("BAI_AssaultState" .. (override and "Override" or ""), state)
+            end
+            if not no_as_mod then
+                LuaNetworking:SendToPeers("AssaultStates_Net", state)
+                LuaNetworking:SendToPeers("SyncAssaultPhase", state) -- KineticHUD
+            end
+        end
     end
+
+    SydneyHUD:Load()
+    log(SydneyHUD.info .. "SydneyHUD loaded.")
 end

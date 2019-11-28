@@ -3,331 +3,23 @@
     "description": "All-In-One HUD mod",
     "author": "SydneyMOD Project Team; Fixes and improvements by Dom",
     "contact": "http://steamcommunity.com/groups/SydneyMOD",
-    "version": "4.1.0",
+    "version": "4.1.5 Beta",
     "blt_version": 2,
+    "supermod_definition" : "sydneyhud.xml",
     "color": "0.3 0 1",
     "image": "logo.png",
-    "updates": [
-        {
-            "identifier": "SydneyHUD",
-            "host":
-            {
-                "meta": "https://www.dropbox.com/s/b9b4lcozb2687h3/meta.json?raw=1"
-            }
-        },
-        {
-            "identifier": "fed_inv",
-            "install_dir": "assets/mod_overrides/",
-            "install_folder": "Federal Inventory",
-            "display_name": "Federal Inventory"
-        }
-    ],
     "pre_hooks": [
         {
-            "script_path": "lua/lib/Entry.lua",
-            "hook_id": "lib/entry"
+            "hook_id": "lib/entry",
+            "script_path": "lua/lib/Entry.lua"
         },
         {
-            "script_path": "lua/lib/setups/Setup.lua",
-            "hook_id": "lib/setups/setup"
+            "hook_id": "lib/setups/setup",
+            "script_path": "lua/lib/setups/Setup.lua"
         },
         {
-            "script_path": "lua/lib/setups/GameSetup.lua",
-            "hook_id": "lib/setups/gamesetup"
-        }
-    ],
-    "hooks": [
-        {
-            "script_path": "lua/lib/setups/Setup.lua",
-            "hook_id": "lib/setups/setup"
-        },
-        {
-            "script_path": "lua/lib/setups/GameSetup.lua",
-            "hook_id": "lib/setups/gamesetup"
-        },
-        {
-            "script_path": "lua/lib/setups/DeployableWaypoint.lua",
-            "hook_id": "lib/setups/gamesetup"
-        },
-        {
-            "script_path": "lua/lib/setups/TimerWaypoint.lua",
-            "hook_id": "lib/setups/gamesetup"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/chatmanager"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/enemymanager"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/group_ai_states/groupaistatebase"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/hud/hudassaultcorner"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/hud/hudinteraction"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/hud/hudstatsscreen"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/hud/hudsuspicion"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/hud/hudteammate"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/hudmanager"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/hudmanagerpd2"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/menu/blackmarketgui"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/menu/contractboxgui"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/menu/lootdropscreengui"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/menu/menubackdropgui"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/menu/menucomponentmanager"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/menu/menunodegui"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/menu/menuscenemanager"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/menu/missionbriefinggui"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/menu/stageendscreengui"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/menumanager"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/missionassetsmanager"
-        },
-        {
-            "hook_id": "lib/managers/moneymanager",
-            "script_path": "SydneyHUD.lua"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/objectinteractionmanager"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/playermanager"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/managers/trademanager"
-        },
-        {
-            "hook_id" : "lib/modifiers/boosts/gagemodifierlifesteal",
-            "script_path" : "SydneyHUD.lua"
-        },
-        {
-            "hook_id" : "lib/modifiers/boosts/gagemodifiermeleeinvincibility",
-            "script_path" : "SydneyHUD.lua"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/network/base/networkpeer"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/network/base/handlers/connectionnetworkhandler"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/network/handlers/unitnetworkhandler"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/player_actions/skills/playeractionammoefficiency"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/player_actions/skills/playeractionbloodthirstbase"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/player_actions/skills/playeractiondireneed"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/player_actions/skills/playeractionexperthandling"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/player_actions/skills/playeractionshockandawe"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/player_actions/skills/playeractiontriggerhappy"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/player_actions/skills/playeractionunseenstrike"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/states/ingamewaitingforplayers"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/tweak_data/charactertweakdata"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/tweak_data/playertweakdata"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/beings/player/huskplayermovement"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/beings/player/playerdamage"
-        },
-        {
-            "hook_id": "lib/units/beings/player/playerinventory",
-            "script_path": "SydneyHUD.lua"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/beings/player/playermovement"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/beings/player/states/playerbleedout"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/beings/player/states/playercarry"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/beings/player/states/playercivilian"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/beings/player/states/playerdriving"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/beings/player/states/playermaskoff"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/beings/player/states/playerstandard"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/enemies/cop/copdamage"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/equipment/ammo_bag/ammobagbase"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/equipment/bodybags_bag/bodybagsbagbase"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/equipment/doctor_bag/doctorbagbase"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/equipment/ecm_jammer/ecmjammerbase"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/equipment/grenade_crate/grenadecratebase"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/equipment/sentry_gun/sentrygunbase"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/equipment/sentry_gun/sentrygundamage"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/interactions/interactionext"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/props/digitalgui"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/props/securitycamera"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/props/securitylockgui"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/props/timergui"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/weapons/newraycastweaponbase"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/weapons/sentrygunweapon"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/weapons/weaponflashlight"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/units/weapons/weaponlaser"
-        },
-        {
-            "hook_id" : "lib/utils/propertymanager",
-            "script_path": "SydneyHUD.lua"
-        },
-        {
-            "script_path": "SydneyHUD.lua",
-            "hook_id": "lib/utils/temporarypropertymanager"
+            "hook_id": "lib/setups/gamesetup",
+            "script_path": "lua/lib/setups/GameSetup.lua"
         }
     ],
     "keybinds": [
@@ -355,6 +47,15 @@
             "description": "sydneyhud_ping_desc",
             "script_path": "script/CheckPing.lua",
             "run_in_menu": true,
+            "run_in_game": true,
+            "localized": true
+        },
+        {
+            "keybind_id": "shuffle_music",
+            "name": "sydneyhud_shuffle_music",
+            "description": "sydneyhud_shuffle_music_keybind_desc",
+            "script_path": "script/ShuffleMusic.lua",
+            "run_in_menu": false,
             "run_in_game": true,
             "localized": true
         }

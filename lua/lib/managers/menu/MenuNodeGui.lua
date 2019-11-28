@@ -1,6 +1,4 @@
-local _setup_item_rows_original = MenuNodeMainGui._setup_item_rows
 local _add_version_string_original = MenuNodeMainGui._add_version_string
-
 function MenuNodeMainGui:_add_version_string()
     _add_version_string_original(self)
     self._version_string:set_text("PAYDAY2 v" .. Application:version() .. " with SydneyHUD v" .. SydneyHUD:GetVersion())
@@ -9,8 +7,23 @@ function MenuNodeMainGui:_add_version_string()
     end
 end
 
+local _setup_item_rows_original = MenuNodeMainGui._setup_item_rows
 function MenuNodeMainGui:_setup_item_rows(node, ...)
     _setup_item_rows_original(self, node, ...)
+    if SydneyHUD.SaveDataNotCompatible then -- Should always show, because it is important
+        QuickMenu:new(
+            managers.localization:text("sydneyhud_savedata_not_compatible"),
+            managers.localization:text("sydneyhud_savedata_not_compatible_desc"),
+            {
+                {
+                    text = managers.localization:text("sydneyhud_ok"),
+                    is_cancel_button = true
+                }
+            },
+            true
+        )
+        SydneyHUD.SaveDataNotCompatible = false
+    end
     if SydneyHUD._poco_conf and not SydneyHUD._poco_warning then
         SydneyHUD._fixed_poco_conf = deep_clone(SydneyHUD._poco_conflicting_defaults)
         for k, v in pairs(SydneyHUD._poco_conf) do
@@ -132,6 +145,13 @@ function MenuNodeMainGui:_setup_item_rows(node, ...)
             if not playerBottom.showSpecial or playerBottom.showSpecial > 0 then
                 SydneyHUD._fixed_poco_conf.playerBottom.showSpecial = 0
                 table.insert(recommendations, "playerBottom.showSpecial")
+            end
+        end
+        local root = SydneyHUD._fixed_poco_conf.root
+        if root then
+            if root.shuffleMusic ~= false then
+                SydneyHUD._fixed_poco_conf.root.shuffleMusic = false
+                table.insert(recommendations, "root.shuffleMusic")
             end
         end
         if #recommendations ~= 0 and SydneyHUD:GetOption("show_poco_recommendations") then

@@ -1,10 +1,4 @@
 local init_original = HUDTeammate.init
-local set_name_original = HUDTeammate.set_name
-local set_state_original = HUDTeammate.set_state
-local set_health_original = HUDTeammate.set_health
-local teammate_progress_original = HUDTeammate.teammate_progress
-local set_ammo_amount_by_type_original = HUDTeammate.set_ammo_amount_by_type
-
 function HUDTeammate:init(i, ...)
     init_original(self, i, ...)
     if self._main_player then
@@ -18,6 +12,10 @@ function HUDTeammate:init(i, ...)
     end
     self:_init_killcount()
     self:_init_revivecount()
+end
+
+function HUDTeammate:SydneyHUDUpdate()
+    self:refresh_kill_count_visibility()
 end
 
 function HUDTeammate:inject_health_glow()
@@ -40,45 +38,34 @@ function HUDTeammate:inject_health_glow()
         layer = 2,
         blend_mode = "add"
     })
-
     underdog_glow:set_center( radial_health_panel:w() / 2 , radial_health_panel:h() / 2 )
 end
 
-
 function HUDTeammate:show_underdog()
-
     local teammate_panel = self._panel:child( "player" )
     local radial_health_panel = teammate_panel:child( "radial_health_panel" )
     local underdog_glow = radial_health_panel:child( "underdog_glow" )
-
-    if not self._underdog_animation then
+    if not self._underdog_animation and underdog_glow then
         underdog_glow:set_visible( true )
         underdog_glow:animate( callback( self , self , "_animate_glow" ) )
-
         self._underdog_animation = true
     end
-
 end
 
 function HUDTeammate:hide_underdog()
-
     local teammate_panel = self._panel:child( "player" )
     local radial_health_panel = teammate_panel:child( "radial_health_panel" )
     local underdog_glow = radial_health_panel:child( "underdog_glow" )
-
-    if self._underdog_animation then
+    if self._underdog_animation and underdog_glow then
         underdog_glow:set_alpha( 0 )
         underdog_glow:set_visible( false )
         underdog_glow:stop()
-
         self._underdog_animation = nil
     end
-
-    end
+end
 
 function HUDTeammate:_animate_glow( glow )
     local t = 0
-
     while true do
         t = t + coroutine.yield()
         glow:set_alpha( ( math.abs( math.sin( ( 4 + t ) * 360 * 4 / 4 ) ) ) )
@@ -104,7 +91,6 @@ function HUDTeammate:_init_stamina_meter()
     })
     self._stamina_bar:set_color(Color(1, 1, 0, 0))
     self._stamina_bar:set_center(radial_health_panel:child("radial_health"):center())
-
     self._stamina_line = radial_health_panel:rect({
         color = Color.red,
         w = radial_health_panel:w() * 0.10,
@@ -390,6 +376,7 @@ function HUDTeammate:update_armor_timer(t)
     end
 end
 
+local teammate_progress_original = HUDTeammate.teammate_progress
 function HUDTeammate:teammate_progress(enabled, tweak_data_id, timer, success, ...)
     teammate_progress_original(self, enabled, tweak_data_id, timer, success, ...)
     if enabled then
@@ -457,19 +444,23 @@ end
 
 function HUDTeammate:set_max_stamina(value)
     self._max_stamina = value
-    local w = self._stamina_bar:w()
-    local threshold = tweak_data.player.movement_state.stamina.MIN_STAMINA_THRESHOLD
-    local angle = 360 * (1 - threshold/self._max_stamina) - 90
-    local x = 0.5 * w * math.cos(angle) + w * 0.5 + self._stamina_bar:x()
-    local y = 0.5 * w * math.sin(angle) + w * 0.5 + self._stamina_bar:y()
-    self._stamina_line:set_x(x)
-    self._stamina_line:set_y(y)
-    self._stamina_line:set_rotation(angle)
+    if self._stamina_bar then
+        local w = self._stamina_bar:w()
+        local threshold = tweak_data.player.movement_state.stamina.MIN_STAMINA_THRESHOLD
+        local angle = 360 * (1 - threshold/self._max_stamina) - 90
+        local x = 0.5 * w * math.cos(angle) + w * 0.5 + self._stamina_bar:x()
+        local y = 0.5 * w * math.sin(angle) + w * 0.5 + self._stamina_bar:y()
+        self._stamina_line:set_x(x)
+        self._stamina_line:set_y(y)
+        self._stamina_line:set_rotation(angle)
+    end
     self:set_stamina_meter_visibility(true)
 end
 
 function HUDTeammate:set_current_stamina(value)
-    self._stamina_bar:set_color(Color(1, value/self._max_stamina, 0, 0))
+    if self._stamina_bar then
+        self._stamina_bar:set_color(Color(1, value/self._max_stamina, 0, 0))
+    end
 end
 
 function HUDTeammate:set_stamina_meter_visibility(visible)
@@ -483,6 +474,9 @@ function HUDTeammate:increment_revives()
         self._revives_count = self._revives_count + 1
         self._revives_counter:set_text(tostring(self._revives_count))
     end
+end
+
+function HUDTeammate:UpdateRevives(new_downs)
 end
 
 function HUDTeammate:reset_revives()
@@ -566,14 +560,17 @@ function HUDTeammate:change_health(change_of_health)
     end
 end
 
+local set_health_original = HUDTeammate.set_health
 function HUDTeammate:set_health(data)
     if data.revives then
-        local revive_colors = { Color("FF8000"), Color("FFFF00"), Color("80FF00"), Color("00FF00") }
-        self._revives_counter:set_color(revive_colors[data.revives - 1] or Color.red)
-        if self._main_player and managers.player:has_category_upgrade("player", "messiah_revive_from_bleed_out") then
-            self._revives_counter:set_text(tostring(data.revives - 1) .. "/" .. tostring(managers.player._messiah_charges or 0))
-        else
-            self._revives_counter:set_text(tostring(data.revives - 1))
+        if self._revives_counter then
+            local revive_colors = { Color("FF8000"), Color("FFFF00"), Color("80FF00"), Color("00FF00") }
+            self._revives_counter:set_color(revive_colors[data.revives - 1] or Color.red)
+            if self._main_player and managers.player:has_category_upgrade("player", "messiah_revive_from_bleed_out") then
+                self._revives_counter:set_text(tostring(data.revives - 1) .. "/" .. tostring(managers.player._messiah_charges or 0))
+            else
+                self._revives_counter:set_text(tostring(data.revives - 1))
+            end
         end
         self:set_player_in_custody(data.revives - 1 < 0)
     end
@@ -593,10 +590,12 @@ function HUDTeammate:set_detection_risk(risk)
 end
 
 function HUDTeammate:increment_kill_count(is_special, headshot)
-    self._kill_count = self._kill_count + 1
-    self._kill_count_special = self._kill_count_special + (is_special and 1 or 0)
-    self._headshot_kills = self._headshot_kills + (headshot and 1 or 0)
-    self:_update_kill_count_text()
+    if self._kill_count then
+        self._kill_count = self._kill_count + 1
+        self._kill_count_special = self._kill_count_special + (is_special and 1 or 0)
+        self._headshot_kills = self._headshot_kills + (headshot and 1 or 0)
+        self:_update_kill_count_text()
+    end
 end
 
 function HUDTeammate:_update_kill_count_text()
@@ -609,7 +608,6 @@ function HUDTeammate:_update_kill_count_text()
     end
     self._kills_text:set_text(kill_string)
     self:_update_kill_count_pos()
-    self:refresh_kill_count_visibility()
     if not self._color_pos then 
         self._color_pos = 1
     end
@@ -631,6 +629,7 @@ function HUDTeammate:reset_kill_count()
     self:_update_kill_count_text()
 end
 
+local set_name_original = HUDTeammate.set_name
 function HUDTeammate:set_name(teammate_name, ...)
     if teammate_name ~= self._name then
         self._name = teammate_name
@@ -707,17 +706,18 @@ function HUDTeammate:refresh_kill_count_visibility()
     self._kills_panel:set_visible((not self._ai or SydneyHUD:GetOption("show_ai_kills")) and SydneyHUD:GetOption("enable_kill_counter"))
 end
 
+local set_state_original = HUDTeammate.set_state
 function HUDTeammate:set_state(...)
     set_state_original(self, ...)
     self:refresh_kill_count_visibility()
     if self._ai then
         self._kills_panel:set_bottom(self._panel:child("player"):bottom())
     else
-        local name_label = self._panel:child("name")
-        self._kills_panel:set_bottom(name_label:bottom())
+        self._kills_panel:set_bottom(self._panel:child("name"):bottom())
     end
 end
 
+local set_ammo_amount_by_type_original = HUDTeammate.set_ammo_amount_by_type
 function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, current_left, max, ...)
     if SydneyHUD:GetOption("improved_ammo_count") then
         local weapon_panel = self._player_panel:child("weapons_panel"):child(type .. "_weapon_panel")
